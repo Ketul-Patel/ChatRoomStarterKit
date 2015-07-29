@@ -1,0 +1,16 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+#chatBox {
+  border: 1px solid black;
+  height: 500px;
+  width: 500px;
+  padding: 5px;
+  overflow-y: scroll;
+}
+#messageInput {
+  margin-top: 5px;
+  width: 450px;
+}
+

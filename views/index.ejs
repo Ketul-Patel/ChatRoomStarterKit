@@ -1,0 +1,43 @@
+<html>
+  <head>
+    <link rel='stylesheet' type='text/css' href='style.css'>
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+    <script type='text/javascript' src='/socket.io/socket.io.js'></script>
+  </head>
+  <body>
+    <h1>Chat Here!</h1>
+    <div id='chatBox'>
+    </div>
+    <form id='messageForm'>
+      <input id='messageInput' type='text'>
+      <input type='submit' value='Send'>
+    </form>
+    <script>
+      $(document).ready(function() {  
+        // connect to sockets
+        var socket = io.connect();
+        var currentUser = prompt('What is your name?');
+        // immediately emit the newUser event to notify the server that a new user has joined
+        socket.emit('newUser', {name: currentUser});
+        // set up the logic to handle emitting to the server when a new message is sent
+        $('#messageForm').submit(function() {
+          event.preventDefault()
+          var message = currentUser + ': ' + $('#messageInput').val();
+          socket.emit('messageSubmit', {message: message})
+          $('#messageInput').val('');
+        })
+        // Begin socket listeners
+        // listen for initial messages
+        socket.on('initialMessages', function(data) {
+          for(message in data.messages) {
+            $('#chatBox').append('<p>' + data.messages[message] + '</p>');
+          }
+        })
+        // listen for new messages
+        socket.on('newMessage', function(data) {
+          $('#chatBox').append('<p>' + data.message + '</p>');
+        })
+      })
+    </script>
+  </body>
+</html>
